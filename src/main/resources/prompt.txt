@@ -1,0 +1,123 @@
+# AI Task: TDD Sprint – Build a Complete Feature Using Test-Driven Development
+
+## Objective:
+Use Test-Driven Development (TDD) to build a complete file upload feature from scratch with 90%+ test coverage, readable and maintainable code, and passing unit + integration tests.
+
+---
+
+## 🧩 Step 1: Feature Selection
+
+**Feature:** File Upload
+
+**Brief Description:**
+Allow users to upload files (e.g., PDF, PNG, DOCX) through a REST API endpoint. Files should be saved to the file system (or cloud storage), and metadata (filename, size, type, timestamp) stored in the database.
+
+---
+
+## 🧪 Step 2: Test Generation (Red Phase)
+
+**Prompt:**
+> Write a full set of failing unit tests for a file upload feature.
+
+### Requirements:
+- Use `pytest` (or `unittest` if preferred) in Python
+- Cover:
+  - ✅ Successful upload of valid file types
+  - ✅ Rejection of unsupported file types
+  - ✅ Empty file upload attempt
+  - ✅ File size exceeding limit
+  - ✅ Duplicate filename handling
+  - ✅ Metadata persistence (DB save)
+  - ✅ Upload failure handling (e.g., I/O error)
+- Use mocks for storage and DB access
+- Tests should **initially fail** (TDD Red phase)
+
+### Deliverable:
+- ✅ `test_file_upload.py` with 5–10 test functions
+- ✅ Tests follow proper naming and documentation
+
+---
+
+## ⚙️ Step 3: Minimal Implementation (Green Phase)
+
+**Prompt:**
+> Implement the minimum code required to make all file upload unit tests pass.
+
+### Requirements:
+- Create a `FileUploadService` or similar
+- Save the file to `/uploads/` or mock path
+- Use in-memory DB or mock repository to store metadata
+- Accept only `.pdf`, `.png`, `.docx` (configurable)
+- Return upload success/failure response
+
+### Deliverable:
+- ✅ `file_upload_service.py` (or equivalent)
+- ✅ File save logic + metadata persistence
+- ✅ All tests from Step 2 now pass
+
+---
+
+## 🔁 Step 4: Refactor (Refactor Phase)
+
+**Prompt:**
+> Refactor the implementation while keeping all tests green.
+
+### Requirements:
+- Extract helper methods (e.g., for validation, filename sanitization)
+- Improve naming and folder structure
+- Apply SOLID principles (especially SRP)
+- Add type hints and docstrings
+
+### Deliverable:
+- ✅ Refactored code (e.g., `validators.py`, `models.py`)
+- ✅ All tests still pass (100% green state)
+
+---
+
+## 🔗 Step 5: Add Integration Tests
+
+**Prompt:**
+> Add integration tests for the file upload API.
+
+### Requirements:
+- Use FastAPI/Flask/Express/Spring to expose `/upload` endpoint
+- Simulate:
+  - ✅ Valid file upload end-to-end (HTTP → service → disk → DB)
+  - ✅ Invalid file extension (expect 400)
+  - ✅ Oversized file (expect 413 or custom error)
+- Use mock file system or test folder for upload
+
+### Deliverable:
+- ✅ `test_upload_api.py` with 2–4 integration tests
+- ✅ End-to-end upload scenarios covered
+
+---
+
+## 📈 Step 6: Test Coverage and Quality Check
+
+**Prompt:**
+> Measure test coverage and check code quality.
+
+### Checklist:
+- ✅ Use `coverage.py` to measure code coverage
+- ✅ Ensure **90%+ test coverage**
+- ✅ Review:
+  - Logging and error handling
+  - Config-driven limits (file types, size)
+  - Readability and maintainability
+- ✅ Create `config.py` or `.env` for max file size, upload dir
+
+---
+
+## ✅ Success Criteria:
+
+- ✅ 90%+ unit and integration test coverage
+- ✅ All tests pass (green state)
+- ✅ Code is clean, modular, and follows SOLID
+- ✅ API handles all edge cases and errors gracefully
+- ✅ Documentation/comments exist for public methods
+
+---
+
+# AI Driven Development – #60dayChallenge
+Start with **Step 2**: Generate failing unit tests for file upload.
