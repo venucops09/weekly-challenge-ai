@@ -1,16 +1,19 @@
 import formatPrice from 'utils/formatPrice';
 import { ICartProduct } from 'models';
-
+import React, { useState, useEffect } from 'react';
 import { useCart } from 'contexts/cart-context';
-
 import * as S from './style';
 
 interface IProps {
   product: ICartProduct;
 }
-const CartProduct = ({ product }: IProps) => {
-  const { removeProduct, increaseProductQuantity, decreaseProductQuantity } =
-    useCart();
+const FALLBACK_IMAGE = '/static/img/fallback.png';
+
+const CartProduct = React.memo(({ product }: IProps) => {
+  const { removeProduct, increaseProductQuantity, decreaseProductQuantity } = useCart();
+  if (!product || !product.sku || !product.title) {
+    return <div style={{ color: 'red' }}>Invalid product data.</div>;
+  }
   const {
     sku,
     title,
@@ -21,6 +24,17 @@ const CartProduct = ({ product }: IProps) => {
     availableSizes,
     quantity,
   } = product;
+
+  const [imgUrl, setImgUrl] = useState<string>("");
+
+  useEffect(() => {
+    // Try to load the main cart product image
+    const img = new window.Image();
+    const url = require(`static/products/${sku}-1-cart.webp`);
+    img.src = url;
+    img.onload = () => setImgUrl(url);
+    img.onerror = () => setImgUrl(FALLBACK_IMAGE);
+  }, [sku]);
 
   const handleRemoveProduct = () => removeProduct(product);
   const handleIncreaseProductQuantity = () => increaseProductQuantity(product);
@@ -33,7 +47,7 @@ const CartProduct = ({ product }: IProps) => {
         title="remove product from cart"
       />
       <S.Image
-        src={require(`static/products/${sku}-1-cart.webp`)}
+        src={imgUrl}
         alt={title}
       />
       <S.Details>
@@ -59,6 +73,6 @@ const CartProduct = ({ product }: IProps) => {
       </S.Price>
     </S.Container>
   );
-};
+});
 
 export default CartProduct;

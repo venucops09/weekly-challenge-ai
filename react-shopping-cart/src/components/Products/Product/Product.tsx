@@ -1,4 +1,4 @@
-import { KeyboardEvent } from 'react';
+import { KeyboardEvent, useState, useEffect } from 'react';
 
 import formatPrice from 'utils/formatPrice';
 import { IProduct } from 'models';
@@ -11,8 +11,13 @@ interface IProps {
   product: IProduct;
 }
 
+const FALLBACK_IMAGE = '/static/img/fallback.png';
+
 const Product = ({ product }: IProps) => {
   const { openCart, addProduct } = useCart();
+  if (!product || !product.sku || !product.title) {
+    return <div style={{ color: 'red' }}>Invalid product data.</div>;
+  }
   const {
     sku,
     title,
@@ -20,8 +25,23 @@ const Product = ({ product }: IProps) => {
     installments,
     currencyId,
     currencyFormat,
-    isFreeShipping,
+    isFreeShipping
   } = product;
+
+  const [imgError, setImgError] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string>("");
+
+  useEffect(() => {
+    // Try to load the main product image
+    const img = new window.Image();
+    const url = require(`static/products/${sku}-1-product.webp`);
+    img.src = url;
+    img.onload = () => setImgUrl(url);
+    img.onerror = () => {
+      setImgError(true);
+      setImgUrl(FALLBACK_IMAGE);
+    };
+  }, [sku]);
 
   const formattedPrice = formatPrice(price, currencyId);
   let productInstallment;
@@ -55,7 +75,7 @@ const Product = ({ product }: IProps) => {
   return (
     <S.Container onKeyUp={handleAddProductWhenEnter} sku={sku} tabIndex={1}>
       {isFreeShipping && <S.Stopper>Free shipping</S.Stopper>}
-      <S.Image alt={title} />
+      <S.Image alt={title} style={{ backgroundImage: `url(${imgUrl})` }} />
       <S.Title>{title}</S.Title>
       <S.Price>
         <S.Val>

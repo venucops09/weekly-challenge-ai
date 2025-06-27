@@ -2,13 +2,14 @@ import formatPrice from 'utils/formatPrice';
 import CartProducts from './CartProducts';
 
 import { useCart } from 'contexts/cart-context';
-
+import React, { useCallback } from 'react';
 import * as S from './style';
 
+// Best Practice: Memoize handlers and export as React.memo for performance
 const Cart = () => {
   const { products, total, isOpen, openCart, closeCart } = useCart();
 
-  const handleCheckout = () => {
+  const handleCheckout = useCallback(() => {
     if (total.productQuantity) {
       alert(
         `Checkout - Subtotal: ${total.currencyFormat} ${formatPrice(
@@ -19,10 +20,12 @@ const Cart = () => {
     } else {
       alert('Add some product in the cart!');
     }
-  };
+  }, [total]);
 
-  const handleToggleCart = (isOpen: boolean) => () =>
-    isOpen ? closeCart() : openCart();
+  const handleToggleCart = useCallback(
+    (isOpen: boolean) => () => (isOpen ? closeCart() : openCart()),
+    [openCart, closeCart]
+  );
 
   return (
     <S.Container isOpen={isOpen}>
@@ -47,7 +50,11 @@ const Cart = () => {
             <S.HeaderTitle>Cart</S.HeaderTitle>
           </S.CartContentHeader>
 
-          <CartProducts products={products} />
+          {products.length === 0 ? (
+            <div style={{ padding: '1rem', textAlign: 'center' }}>Your cart is empty.</div>
+          ) : (
+            <CartProducts products={products} />
+          )}
 
           <S.CartFooter>
             <S.Sub>SUBTOTAL</S.Sub>
@@ -79,4 +86,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default React.memo(Cart);

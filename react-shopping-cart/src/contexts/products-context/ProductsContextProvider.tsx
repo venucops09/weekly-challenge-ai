@@ -1,3 +1,5 @@
+// Best Practice: Always initialize context state with safe defaults (empty arrays, false, etc.)
+// and provide clear error messages for context usage outside the provider.
 import { createContext, useContext, FC, useState } from 'react';
 
 import { IProduct } from 'models';
